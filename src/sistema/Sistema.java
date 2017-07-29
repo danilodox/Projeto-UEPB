@@ -407,10 +407,14 @@ public class Sistema {
 			throw new Exception ("Imovel já cadastrado nos imóveis para alugar");
 		}
 	
-		usuarioLogado.incrementaimoveisAlugadosLocador();
+		
 		usuarioLogado.alugaImovel(casa);
 		removeImovelParaAlugar(casa.getCodigoUnico());
+		usuarioLogado.incrementaimoveisAlugadosLocador();
+		
 		return true;
+		
+		 
 		
 	}
 	

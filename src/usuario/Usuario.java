@@ -261,7 +261,7 @@ public class Usuario {
 				  			   + "Login: " + login + "\n"
 				  			   + "CPF: " + cpf + "\n"
 				  			   + "Saldo: " + saldoNaConta + "\n"
-				  			   + "Identificador Unico: " + hashCode() + "\n";
+				  			   + "Identificador Unico: " + hashCode() + "\n\n";
 		
 		if (bancoDeImoveisParaVenda.size() > 0) {
 			usuarioEmString += "IMOVEIS PARA VENDA:" + "\n";	

@@ -77,8 +77,9 @@ public class Main {
 	 */
 	public static boolean operacoesDoSistema() {
 			
+		limparTela();
 		while(true) {
-		
+			
 			menuDepoisQueLogar();
 			opcao = input.next();
 			
@@ -154,11 +155,12 @@ public class Main {
 				
 			case("8"):
 				try {
-					limparTela();
+					
 					ExibirHistorico();
 				} catch (Exception e) {
 					System.out.println(e.getMessage() + "\n");
 				}
+				break;
 					
 			case("9"):
 				limparTela();
@@ -178,15 +180,15 @@ public class Main {
 	public static void operacoesComprarImovel() throws Exception {
 		boolean loopCompra = true;
 		
+		limparTela();
 		while (loopCompra) {
-			limparTela();
+			
 			menuTipoDeBuscaParaCompra();
-			opcao = input.nextLine();
+			opcao = input.next();
 			
 			switch(opcao) {
 			
 			case("1"):
-				
 				
 					if (comprarImovel()) {
 						System.out.println("Compra realizada com sucesso!!");
@@ -198,14 +200,11 @@ public class Main {
 			case("2"):
 				
 					System.out.println(getImovelParaVendaPorFaixaDePreco());
-					loopCompra = false;
 					break;
 				
 			case("3"):
 				
-				
 					System.out.println(getImovelParaVendaPorNComodos());
-					loopCompra = false;
 					break;
 				
 			case("4"):
@@ -221,40 +220,46 @@ public class Main {
 	}
 	
 	public static boolean operacoesAlugar() throws Exception {
-		boolean loop = true;
+		boolean loopAlugar = true;
 		
 		
-		while(loop) {
+		while(loopAlugar) {
+			
 			limparTela();
 			menuTipoDeBuscaParaAlugar();
+			opcao = input.next();
 			
 			switch (opcao) {
 			case("1"):
 				
-				alugaImovelParaTerceiros();
-				loop = false;
+				if (alugaImovelParaTerceiros()) {
+					System.out.println("Imóvel alugado com sucesso!!");
+					break;
+				}
+				
+				loopAlugar = false;
 				break;
 				
 			case("2"):
 				
 				getImovelParaAlugarPorNComodos();
-				loop = false;
+				loopAlugar = false;
 				break;
 				
 			case("3"):
 				
 				getImovelParaAlugarPorAreaInterna();
-				loop = false;
+				loopAlugar = false;
 				break;
 				
 			case("4"):
 				
 				getImovelParaAlugarPorFaixaDePreco();
-				loop = false;
+				loopAlugar = false;
 				break;
 				
 			case("5"):
-				loop = false;
+				loopAlugar = false;
 				break;
 				
 			default:
@@ -262,7 +267,7 @@ public class Main {
 				break;
 			}
 		}
-		return loop;
+		return loopAlugar;
 		
 	}
 	
