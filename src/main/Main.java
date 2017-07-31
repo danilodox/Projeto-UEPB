@@ -1,11 +1,15 @@
 package main;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.Scanner;
 
 
 import sistema.Sistema;
 
+//...
 public class Main {
+	static BufferedReader entrada = new BufferedReader(new InputStreamReader(System.in));
 	static Scanner input = new Scanner(System.in);
     public static String opcao;
     public static String opcaoLogar;
@@ -438,10 +442,10 @@ public class Main {
 	public static boolean casaParaAlugarDeProprietario() throws Exception {
 		System.out.println(" __________________________________________________");
 		System.out.print("| 1) Digite o nome do proprietario: ");
-		String proprietario = input.next();
+		String proprietario = entrada.readLine();
 		System.out.println("|");
 		System.out.print("| 2) Digite um endereço ou uma referência: ");
-		String endereco = input.next();
+		String endereco = entrada.readLine();
 		System.out.println("|");
 		System.out.print("| 3) Digite o tamanho da área interna da casa(m²): ");
 		double area = input.nextDouble();
@@ -462,10 +466,10 @@ public class Main {
 	public static boolean vendeCasa() throws Exception {
 		System.out.println(" __________________________________________________");
 		System.out.print("| 1) Digite o nome do proprietario: ");
-		String proprietario = input.next();
+		String proprietario = entrada.readLine();
 		System.out.println("|");
 		System.out.print("| 2) Digite um endereço ou uma referência: ");
-		String endereco = input.next();
+		String endereco = entrada.readLine();
 		System.out.println("|");
 		System.out.print("| 3) Digite o tamanho da área interna da casa(m²): ");
 		double area = input.nextDouble();
@@ -486,10 +490,10 @@ public class Main {
 	public static boolean vendeApartamento() throws Exception {
 		System.out.println(" __________________________________________________");
 		System.out.print("| 1) Digite o nome do proprietario: ");
-		String proprietario = input.next();
+		String proprietario = entrada.readLine();
 		System.out.println("|");
 		System.out.print("| 2) Digite um endereço ou uma referência: ");
-		String endereco = input.next();
+		String endereco = entrada.readLine();
 		System.out.println("|");
 		System.out.print("| 3) Digite quantos andares contém o apartamento: ");
 		int andar = input.nextInt();
@@ -545,7 +549,7 @@ public class Main {
 	public static boolean criaConta() throws Exception {
 		System.out.println(" __________________________________________________");
 		System.out.print("| 1) Digite seu nome: ");
-		String nome = input.next();
+		String nome = entrada.readLine();
 		System.out.println("|");
 		System.out.print("| 3) Digite sua idade: ");
 		int idade = input.nextInt();
