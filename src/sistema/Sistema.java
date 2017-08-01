@@ -19,7 +19,10 @@ public class Sistema {
 	private Map<String, Usuario> bancoDeUsuarios; 
 	private Map<String, String> bancoDeSenhas;
 	
-	//MÉTODO CONSTRUTOR
+	/**
+	 * Construtor da classe Sistema.
+	 *  
+	 */
 	public Sistema(){
 		this.isLogado = false;
 		this.fabricaDeImoveis = new ImovelFactory(); 
@@ -29,9 +32,19 @@ public class Sistema {
 		this.bancoDeSenhas = bancoDeSenhasDefault();
 	}
 	
+	/**
+	 * Método get
+	 * @return
+	 */
+	public boolean isLogado(){
+		return this.isLogado;
+	}
 	
 	/**
-	 * ADICIONA DINHEIRO NO SALDO DO USUARIO
+	 * Recebe como parâmetro a senha do adm (apenas com o acesso dessa senha que pode adicionar algum valor), 
+	 * 		o login (para adicionar o dinheiro no usuario com o nome do login) e 
+	 * 		o valor (a quantidade do dinheiro a ser adicionado).
+	 * 
 	 * @param senhaDoADM, login, valor
 	 * @throws Exception
 	 */
@@ -49,7 +62,9 @@ public class Sistema {
 	
 	
 	/**
-	 * CRIA CONTA DO USUARIO
+	 * Cria o objeto usuario, adiciona o login e senha ao banco de senhas e
+	 * 		adiciona o usuario ao Map banco de usuarios.
+	 * 
 	 * @param nome, login, cpf, senha
 	 * @return
 	 * @throws Exception
@@ -85,7 +100,8 @@ public class Sistema {
 	}
 	
 	/**
-	 * MOSTRA O HISTORICO DO USUARIO QUE ESTIVER LOGADO
+	 * Mostra o histórico do usuário que estiver logado.
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
@@ -98,7 +114,7 @@ public class Sistema {
 	}
 	
 	/**
-	 * MOSTRA O LOGIN DO USUARIO LOGADO
+	 * Mostra o login do usuário logado.
 	 * @return
 	 * @throws Exception
 	 */
@@ -111,7 +127,10 @@ public class Sistema {
 	}
 	
 	/**
-	 * MÉTODO PARA LOGAR NO SISTEMA
+	 * Verifica se o login e senha estão no banco de senhas e então, (caso seja true) modifica o
+	 * 		atributo isLogado para true, o atributo loginDoUsuarioLogado recebe o login do usuario, e 
+	 * 		usuarioLogado recebe como tipo usuario o usuario que logou. 
+	 * 
 	 * @param login, senha
 	 * @return
 	 * @throws Exception
@@ -137,7 +156,7 @@ public class Sistema {
 	}
 	
 	/**
-	 * MÉTODO PARA DESLOGAR DO SISTEMA
+	 * Desloga do sistema, modificando os atributos para null e false.
 	 */
 	public void deslogar(){
 		this.loginDoUsuarioLogado = null;
@@ -145,13 +164,11 @@ public class Sistema {
 		this.isLogado = false;
 	}
 	
-	//888888888888888888888888888888888888888888888888888888888888888888
-	public boolean isLogado(){
-		return this.isLogado;
-	}
+	
 	
 	 /**
-	  * VERIFICA SE O LOGIN E SENHA ESTÃO CORRETOS 
+	  * Verifica se o login existe no banco de senhas e compara se a senha passada
+	  * 	como parâmetro é correspondente com a chave do usuário. 
 	  * @param login
 	  * @param senha
 	  * @return
@@ -169,7 +186,14 @@ public class Sistema {
 	}
 	
 	/**
-	 * COMPRA IMOVEL
+	 * Cria o objeto imovel, verifica se o usuario tem saldo suficiente para fazer a compra,
+	 * 		efetua o pagamento adiquindo o valor com um getPreco,
+	 * 		guarda o imovel comprado no Map bancoDeImoveisParaVenda do novo usuario que comprou o imovel.
+	 * 
+	 * Modifica o valores do imovel comprado para o novo dono do imóvel,
+	 * 		adiciona o dinheiro ao antigo dono do imovel e
+	 * 		remove o imovel do usuario que era dono antes.
+	 * 
 	 * @param codigoDoImovel
 	 * @return
 	 * @throws Exception
@@ -197,7 +221,7 @@ public class Sistema {
 			
 			if (usuario.getNome().equals(nomeDoProprietario)){//PROCURA O USUARIO DONO DO IMOVEL Q ACABOU SENDO VENDIDO
 				
-				imovel.setProprietario(usuarioLogado.getNome());//USUARIO ACHADO
+				imovel.setProprietario(usuarioLogado.getNome());
 				adicionaDinheiroAoUsuario(SENHA_DO_ADM, usuario.getLogin(), imovel.getPreco());//ADICIONA DINHEIRO AO USUARIO Q FOI ACHADO(DONO DO IMOVEL Q ACABOU DE VENDER)
 				usuario.removeImovelParaVenda(codigoDoImovel);//JÁ QUE FOI COMPRADO O IMOVEL, REMOVE O IMOVEL DO MAP
 				removeImovel(codigoDoImovel);
@@ -209,7 +233,7 @@ public class Sistema {
 	}
 	
 	/**
-	 * REMOVE IMOVEL POR CODIGO DO IMOVEL
+	 * Remove um imovel por código do imóvel.
 	 * @param codigoDoImovel
 	 */
 	private void removeImovel(String codigoDoImovel) {
@@ -218,7 +242,9 @@ public class Sistema {
 	}
 	
 	/**
-	 * VENDE APARTAMENTO AO SISTEMA
+	 * Cria o objeto apartamento, adiciona apartamento ao Map(banco imovel para venda) do usuario logado.
+	 * Adiciona o dinheiro da venda da casa na conta do usuario que está logado e
+	 * 	incrementa o número de vendas do usuário logado.
 	 * @param proprietario, coordenadaDeEndereco, andar, area, preco, numeroDeQuartos, vagasNaGaragem
 	 * @return
 	 * @throws Exception
@@ -252,7 +278,8 @@ public class Sistema {
 	}
 	
 	/**
-	 * ADICIONA O IMOVEL PARA O MAP bancoDeImoveisParaVenda
+	 * Adiciona o imovel para o Map bancoDeImoveisParaVenda.
+	 * 
 	 * @param imovel
 	 * @throws Exception
 	 */
@@ -269,7 +296,10 @@ public class Sistema {
 	}
 	
 	/**
-	 * VENDE CASA AO SISTEMA
+	 * Cria o objeto casa, adiciona casa ao Map(banco imovel para venda) do usuario logado.
+	 * Adiciona o dinheiro da venda da casa na conta do usuario que está logado e
+	 * 	incrementa o número de vendas do usuário logado.
+	 * 
 	 * @param proprietario, coordenadaDeEndereco, area, preco, numeroDeQuartos, vagasNaGaragem
 	 * @return
 	 * @throws Exception
@@ -288,6 +318,9 @@ public class Sistema {
 		if (numeroDeQuartos <= 0) {
 			throw new Exception("Numero de quartos da casa não pode ser menor ou igual a zero.");
 		}
+		if (coordenadaDeEndereco == null || coordenadaDeEndereco.trim().isEmpty()) {
+			throw new Exception ("Endereço não pode ser vazio ou nulo.");
+		}
 		
 		Imovel casa = fabricaDeImoveis.fabricaCasa(proprietario, coordenadaDeEndereco, area, preco, numeroDeQuartos, vagasNaGaragem);
 		cadastraImovelParaVenda(casa);
@@ -300,8 +333,10 @@ public class Sistema {
 		
 	}
 	
+	
 	/**
-	 * MOSTRA IMÓVEL PARA VENDA POR FAIXA DE PREÇO
+	 * Recupera os imoveis que estão no Map bancoDeImoveisParaVenda por faixa de preço.
+	 * 
 	 * @param precoMinimo
 	 * @param precoMaximo
 	 * @return
@@ -318,8 +353,10 @@ public class Sistema {
 		return imoveisEmString;
 	}
 	
+	
 	/**
-	 * MOSTRA IMÓVEL PARA VENDA POR NÚMERO DE CÔMODOS
+	 * Recupera os imoveis que estão no Map bancoDeImoveisParaVenda por número de cômodos.
+	 * 
 	 * @param numeroMinimoDeComodos
 	 * @param numeroMaximoDeComodos
 	 * @return
@@ -336,8 +373,10 @@ public class Sistema {
 		return imoveisEmString;
 	}
 	
+	
 	/**
-	 * ALUGA APARTAMENTO DE PROPRIETÁRIO
+	 * FALTA CORRIGIR...
+	 * 		
 	 * @param proprietario, coordenadaDeEndereco, andar, area, preco, numeroDeQuartos, vagasNaGaragem
 	 * @return
 	 * @throws Exception
@@ -372,16 +411,18 @@ public class Sistema {
 		return true;
 	}
 	
+	
 	/**
-	 * REMOVE IMÓVEL PARA ALUGAR
+	 * Remove imovel por codigoDoImovel do Map bancoDeImoveisParaAlugar.
 	 * @param codigoDoImovel
 	 */
 	private void removeImovelParaAlugar(String codigoDoImovel) {
 		bancoDeImoveisParaAlugar.remove(codigoDoImovel);
 	}
 	
+	
 	/**
-	 * ALUGA CASA DE PROPRIETÁRIO
+	 * Falta CORRIGIR...
 	 * @param proprietario, coordenadaDeEndereco, area, preco, numeroDeQuartos, vagasNaGaragem
 	 * @return
 	 * @throws Exception
@@ -412,14 +453,14 @@ public class Sistema {
 		removeImovelParaAlugar(casa.getCodigoUnico());
 		usuarioLogado.incrementaimoveisAlugadosLocador();
 		
-		return true;
-		
-		 
-		
+		return true; 
 	}
 	
+	
 	/**
-	 * ALUGA IMÓVEL PARA TERCEIROS 
+	 * Aluga imóvel de terceiros, armazena o imovel no bancoDeImoveisParaAlugar do usuario logado e
+	 * 		cadastra o imovel.
+	 * 
 	 * @param codigoDoImovel
 	 * @return
 	 * @throws Exception
@@ -446,6 +487,7 @@ public class Sistema {
 		return true;
 	}
 	
+	
 	/**
 	 * ADICIONA IMÓVEL PARA ALUGAR NO MAP bandoDeImoveisParaAlugar 
 	 * @param imovel
@@ -463,8 +505,8 @@ public class Sistema {
 		imovel.setAlugado(true);    //MUDA O STATUS PARA ALUGADO TRUE
 		usuarioLogado.incrementaimoveisAlugadosLocador();
 		bancoDeImoveisParaAlugar.put(imovel.getCodigoUnico(), imovel);
-		
 	}
+	
 	
 	/**
 	 * MOSTRA IMÓVEL PARA ALUGAR POR FAIXA DE PREÇO
@@ -486,6 +528,7 @@ public class Sistema {
 		return imoveisEmString;
 	}
 	
+	
 	/**
 	 * MOSTRA IMÓVEL PARA ALUGAR POR NÚMERO DE CÔMODOS
 	 * @param numeroMinimoDeComodos
@@ -504,6 +547,7 @@ public class Sistema {
 		return imoveisEmString;
 	}
 	
+	
 	/**
 	 * MOSTRA IMÓVEL PARA ALUGAR POR ÁREA INTERNA
 	 * @param areaMinima
@@ -520,6 +564,7 @@ public class Sistema {
 		}
 		return imoveisEmString;
 	}
+	
 	
 	/**
 	 * MÉTODO DO TIPO MAP (bancoDeImoveisParaVendaDefault) PRIVATE PARA DEIXAR ADICIONADOS OS IMOVEIS
@@ -541,6 +586,7 @@ public class Sistema {
 		
 		return bancoDeImoveisDefault;
 	}
+	
 	
 	/**
 	 * MÉTODO DO TIPO MAP (bancoDeUsuariosDefault) PRIVATE PARA DEIXAR ADICIONADOS OS USUÁRIOS
@@ -564,6 +610,7 @@ public class Sistema {
 		return bancoDeUsuariosDefault;
 		
 	}
+	
 	
 	/**
 	 * MÉTODO DO TIPO MAP (bancoDeSenhasDefault) PRIVATE PARA DEIXAR ADICIONADOS AS SENHAS E LOGIN DOS USUÁRIOS ADICIONADOS
