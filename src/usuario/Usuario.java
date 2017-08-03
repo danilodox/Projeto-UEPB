@@ -4,7 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import imovel.Imovel;
+import validacao.ValidationModule;
 
+/**
+ * Classe representando um usuário.
+ * 
+ * @author Danilo Medeiros Dantas, danilomedeiros.dox@gmail.com
+ * @version 1.0 <br>
+ *          Copyright (c) 2017 Universidade Estadual de Campina Grande.
+ */
 public class Usuario {
 	private String nome;
 	private int idade;
@@ -43,10 +51,8 @@ public class Usuario {
 	 * @throws Exception
 	 */
 	public void adicionaDinheiro(double valor) throws Exception {
-		if (valor < 0) {
-			throw new Exception("Valor não pode ser negativo");
-		}
-
+		ValidationModule.analizeValue(valor, "Valor não pode ser negativo");
+		
 		this.saldoNaConta += valor;
 	}
 
@@ -56,9 +62,7 @@ public class Usuario {
 		 * @throws Exception
 		 */
 	public void efetuaPagamento(double valor) throws Exception {
-		if (valor < 0) {
-			throw new Exception("Valor não pode ser negativo");
-		}
+		ValidationModule.analizeValue(valor, "Valor não pode ser negativo");
 
 		this.saldoNaConta -= valor;
 	}
@@ -70,12 +74,10 @@ public class Usuario {
 	 * @throws Exception
 	 */
 	public void alugaImovel(Imovel imovel) throws Exception {
-		if (imovel == null) {
-			throw new Exception("Imóvel não pode ser nulo");
-		}
-		if (bancoDeImoveisAlugadosPeloUsuario.containsKey(imovel.getCodigoUnico())) { 
-			throw new Exception("imovel já linkado");
-		}
+		ValidationModule.analizeObject(imovel, "Imóvel não pode ser nulo");
+		ValidationModule.analizeBoolean(bancoDeImoveisAlugadosPeloUsuario.containsKey(imovel.getCodigoUnico()), "Imóvel já linkado");
+		
+		bancoDeImoveisAlugadosPeloUsuario.put(imovel.getCodigoUnico(), imovel);
 	}
 
 	
@@ -85,13 +87,9 @@ public class Usuario {
 	 * @throws Exception
 	 */
 	public void adicionaImovelParaVenda(Imovel imovel) throws Exception{
-		if (imovel == null) {
-			throw new Exception ("Imóvel não pode ser nulo");
-		}
+		ValidationModule.analizeObject(imovel, "Imóvel não pode ser nulo");
+		ValidationModule.analizeBoolean(bancoDeImoveisAlugadosPeloUsuario.containsKey(imovel.getCodigoUnico()), "Imóvel já linkado");
 		
-		if (bancoDeImoveisParaVenda.containsKey(imovel.getCodigoUnico())) {
-			throw new Exception("imovel pertencente linkado");
-		}
 		bancoDeImoveisParaVenda.put(imovel.getCodigoUnico(), imovel);
 	}
 	
@@ -102,12 +100,9 @@ public class Usuario {
 	 * @throws Exception
 	 */
 	public void adicionaImovelParaAlugar (Imovel imovel) throws Exception {
-		if (imovel == null) {
-			throw new Exception("Imóvel não pode ser nulo");
-		}
-		if (bancoDeImoveisParaAlugar.containsKey(imovel.getCodigoUnico())) {
-			throw new Exception("imovel pertencente linkado");
-		}
+		ValidationModule.analizeObject(imovel, "Imóvel não pode ser nulo");
+		ValidationModule.analizeBoolean(bancoDeImoveisAlugadosPeloUsuario.containsKey(imovel.getCodigoUnico()), "Imóvel já linkado");
+		
 		bancoDeImoveisParaAlugar.put(imovel.getCodigoUnico(), imovel);
 	}
 	
@@ -118,12 +113,9 @@ public class Usuario {
 	 * @throws Exception
 	 */
 	public void removeImovelParaVenda(String codigoDoImovel) throws Exception {
-		if (codigoDoImovel == null || codigoDoImovel.trim().isEmpty()) {
-			throw new Exception("Codigo do imóvel não pode ser vazio ou nulo");
-		}
-		if (!(bancoDeImoveisParaVenda.containsKey(codigoDoImovel))) { 
-			throw new Exception("Imovel nao linkado");
-		}
+		ValidationModule.analyzeString(codigoDoImovel, "Codigo do imóvel não pode ser vazio ou nulo");
+		ValidationModule.analizeBooleanFalse(bancoDeImoveisParaVenda.containsKey(codigoDoImovel), "Imovel nao linkado");
+		
 		bancoDeImoveisParaVenda.remove(codigoDoImovel);
 	}
 	
@@ -133,12 +125,9 @@ public class Usuario {
 	 * @throws Exception
 	 */
 	public void removeImovelParaAlugar(String codigoDoImovel) throws Exception{
-		if (codigoDoImovel == null || codigoDoImovel.trim().isEmpty()) {
-			throw new Exception("Codigo do imóvel não pode ser vazio ou nulo");
-		}
-		if (!(bancoDeImoveisParaAlugar.containsKey(codigoDoImovel))) { 
-			throw new Exception("Imovel nao linkado");
-		}
+		ValidationModule.analyzeString(codigoDoImovel, "Codigo do imóvel não pode ser vazio ou nulo");
+		ValidationModule.analizeBooleanFalse(bancoDeImoveisParaVenda.containsKey(codigoDoImovel), "Imovel nao linkado");
+		
 		bancoDeImoveisParaAlugar.remove(codigoDoImovel);
 	}
 	
@@ -239,7 +228,6 @@ public class Usuario {
 		return this.bancoDeImoveisParaVenda.size();
 	}
 	
-	
 	/**
 	 * MOSTRA O HISTÓRICO DE OPERAÇÕES REALIZADAS
 	 * @return
@@ -289,7 +277,6 @@ public class Usuario {
 		return usuarioEmString + historicoDeOperacoesRealizadas();
 	}
 
-	
 	/**
 	 * MÉTODO HashCode PARA GERAR UM CÓDIGO DIFERENTE PARA CADA USUÁRIO
 	 */

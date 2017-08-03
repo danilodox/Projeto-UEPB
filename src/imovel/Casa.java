@@ -1,5 +1,12 @@
 package imovel;
 
+/**
+ * Classe especializada de imóvel, sua função é representar um imóvel do tipo casa
+ * 
+ * @author Danilo Medeiros Dantas, danilomedeiros.dox@gmail.com
+ * @version 1.0 <br>
+ *          Copyright (c) 2017 Universidade Estadual de Campina Grande.
+ */
 public class Casa extends Imovel {
 	
 	//MÉTODO CONSTRUTOR

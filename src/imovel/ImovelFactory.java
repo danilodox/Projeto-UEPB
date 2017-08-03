@@ -1,7 +1,13 @@
 package imovel;
 
 
-//CLASSE PARA ENCAPSULAR A CRIAÇÃO DE OBJETOS
+/**
+ * Classe responsável por fabricar instancias da classe Imovel.
+ * 
+ * @author Danilo Medeiros Dantas, danilomedeiros.dox@gmail.com
+ * @version 1.0 <br>
+ *          Copyright (c) 2017 Universidade Estadual de Campina Grande.
+ */
 public class ImovelFactory {
 	
 	//MÉTODO PARA CRIAR IMÓVEL QUANDO FOR CASA

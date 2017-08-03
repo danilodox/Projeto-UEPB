@@ -1,5 +1,12 @@
 package imovel;
 
+/**
+ * Classe abstrata representando um imóvel.
+ * 
+ * @author Danilo Medeiros Dantas, danilomedeiros.dox@gmail.com
+ * @version 1.0 <br>
+ *          Copyright (c) 2017 Universidade Estadual de Campina Grande.
+ */
 public abstract class Imovel {
 	private String nomeDoProprietario;
 	private boolean isAlugado;
@@ -74,18 +81,6 @@ public abstract class Imovel {
 	@Override
 	public int hashCode(){
 		return nomeDoProprietario.hashCode() + numeroDeQuartos + vagasNaGaragem + (int) area + coordenadaDeEndereco.hashCode();
-	}
-	
-	//MÉTODO TO STRING DO IMÓVEL
-	
-	@Override
-	public String toString(){
-		return"Codigo do imóvel: " + codigoUnico + "\n"
-				+ "Proprietário: " + nomeDoProprietario + "\n"
-				+ "Area: " + area + "\n"
-				+ "Numero de quartos: " + "\n"
-				+ "Vagas na garagem: " + vagasNaGaragem + "\n"
-				+ "Preço: " + preco + "\n";
 	}
 	
 }

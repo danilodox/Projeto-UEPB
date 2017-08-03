@@ -3,11 +3,21 @@ package sistema;
 import java.util.HashMap;
 import java.util.Map;
 
+import excecoes.ValueInvalidException;
+import validacao.ValidationModule;
 import imovel.Imovel;
 import imovel.ImovelFactory;
 import usuario.Usuario;
 
-//CLASSE QUE ENCAPSULA OS MÉTODOS DO USUARIO E IMOVEL
+/**
+ * Classe que encapsula os métodos das demais classes. Aqui é implementado todos os
+ * tratamento de erros.
+ * 
+ * @author Danilo Medeiros Dantas, danilomedeiros.dox@gmail.com
+ * @version 1.0 <br>
+ *          Copyright (c) 2017 Universidade Estadual de Campina Grande.
+ */
+
 public class Sistema {
 	private final String SENHA_DO_ADM = "uepb";
 	private String loginDoUsuarioLogado;
@@ -49,17 +59,14 @@ public class Sistema {
 	 * @throws Exception
 	 */
 	public void adicionaDinheiroAoUsuario(String senhaDoADM, String login, double valor) throws Exception{
-		if (senhaDoADM == null || senhaDoADM.trim().isEmpty() || !senhaDoADM.equals(SENHA_DO_ADM)) {
-			throw new Exception("Senha inválida");
-		}
-		if (login == null || login.trim().isEmpty()) {
-			throw new Exception("Login inválido");
-		}
+		ValidationModule.analyzeString(login, "Login inválido");
+		ValidationModule.analizeSenhaADM(senhaDoADM);
+		ValidationModule.analizeValue(valor, "O valor a ser adicionado não pode ser negativo");
+		ValidationModule.analizeBooleanFalse(bancoDeUsuarios.containsKey(login), "Login inválido");
 		
 		bancoDeUsuarios.get(login).adicionaDinheiro(valor);
 		
 	}
-	
 	
 	/**
 	 * Cria o objeto usuario, adiciona o login e senha ao banco de senhas e
@@ -70,28 +77,13 @@ public class Sistema {
 	 * @throws Exception
 	 */
 	public boolean criaContaDeUsuario(String nome, int idade, String login, String cpf, String senha) throws Exception{
-		if (nome == null | nome.trim().isEmpty()){
-			throw new Exception("Nome de usuario não pode ser vazio ou nulo");
-		}
-		if (login == null | login.trim().isEmpty()) {
-			throw new Exception("Login de usuario não pode ser vazio ou nulo");
-		}
-		if (cpf == null | cpf.trim().isEmpty()) {
-			throw new Exception("CPF de usuario não pode ser vazio ou nulo");
-		}
-		if (senha == null | senha.trim().isEmpty()) {
-			throw new Exception("Senha de usuario não pode ser vazio ou nulo");
-		}
-		
-		if (idade < 18) {
-			throw new Exception("O usuário não pode ser menor de idade");
-		}
+		ValidationModule.analizeAccount(nome, cpf, idade);
+		ValidationModule.analyzeString(login, "Login inválido");
+		ValidationModule.analyzeString(senha, "Senha inválida");
 		
 		Usuario usuario = new Usuario(nome,idade, login, cpf, senha);
 		
-		if (bancoDeSenhas.containsKey(usuario.getLogin())){
-			throw new Exception("Usuario já cadastrado.");
-		}
+		ValidationModule.analizeUserPresente(bancoDeSenhas, usuario.getLogin());
 		
 		this.bancoDeSenhas.put(login, senha);
 		this.bancoDeUsuarios.put(login, usuario);
@@ -106,10 +98,7 @@ public class Sistema {
 	 * @throws Exception
 	 */
 	public String getHistoricoDoUsuarioLogado() throws Exception {
-		if (loginDoUsuarioLogado == null) {
-			throw new Exception("Não há usuário logado.");
-		}
-		
+		ValidationModule.analyzeString(loginDoUsuarioLogado, "Login inválido");
 		return usuarioLogado.toString();    
 	}
 	
@@ -118,12 +107,9 @@ public class Sistema {
 	 * @return
 	 * @throws Exception
 	 */
-	public String getLoginDoUsuarioLogado() throws Exception{
-		if (isLogado) {
-			return this.loginDoUsuarioLogado;
-		}
+	public String getLoginDoUsuarioLogado(){
 		
-		throw new Exception ("Não há usuário logado");
+			return this.loginDoUsuarioLogado;
 	}
 	
 	/**
@@ -136,14 +122,10 @@ public class Sistema {
 	 * @throws Exception
 	 */
 	public boolean logar(String login, String senha) throws Exception {
-		if (login == null || login.trim().isEmpty()) {
-			throw new Exception("Login inválido");
-		}
-		if (senha == null || senha.trim().isEmpty()) {
-			throw new Exception("Senha inválida");
-		}
+		ValidationModule.analyzeString(login, "Login inválido");
+		ValidationModule.analyzeString(senha, "Senha inválida");
+		ValidationModule.analizeUser(bancoDeSenhas, login);
 		
-		if (bancoDeSenhas.containsKey(login)) {
 			if (autenticaSenha(login, senha)) {
 				this.isLogado = true;
 				this.loginDoUsuarioLogado = login;
@@ -151,8 +133,6 @@ public class Sistema {
 				return true;
 			}
 			throw new Exception("Login ou senha incorreta!!");
-		}
-		throw new Exception("Usuario não cadastrado.");
 	}
 	
 	/**
@@ -164,8 +144,6 @@ public class Sistema {
 		this.isLogado = false;
 	}
 	
-	
-	
 	 /**
 	  * Verifica se o login existe no banco de senhas e compara se a senha passada
 	  * 	como parâmetro é correspondente com a chave do usuário. 
@@ -175,12 +153,8 @@ public class Sistema {
 	  * @throws Exception
 	  */
 	private boolean autenticaSenha(String login, String senha) throws Exception{
-		if (login == null || login.trim().isEmpty() || !bancoDeSenhas.containsKey(login)){
-			throw new Exception ("Login inválido");
-		}
-		if (senha == null || senha.trim().isEmpty()) {
-			throw new Exception("Senha inválida");
-		}
+		ValidationModule.analyzeString(login, "Login inválido");
+		ValidationModule.analyzeString(senha, "Senha inválida");
 		
 		return bancoDeSenhas.get(login).equals(senha);
 	}
@@ -199,18 +173,12 @@ public class Sistema {
 	 * @throws Exception
 	 */
 	public boolean comprarImovel(String codigoDoImovel) throws Exception {
-		if (codigoDoImovel == null || codigoDoImovel.trim().isEmpty()) {
-			throw new Exception("O código do imóvel não pode ser vazio ou nulo");
-		}
-		if (!bancoDeImoveisParaVenda.containsKey(codigoDoImovel)) {
-			throw new Exception("Imóvel não cadastrado.");
-		}
+		ValidationModule.analyzeString(codigoDoImovel, "Código do imóvel inválido");
+		ValidationModule.analizeImmobileVendaPresent(bancoDeImoveisParaVenda, codigoDoImovel);
 		
 		Imovel imovel = bancoDeImoveisParaVenda.get(codigoDoImovel);
-		if (usuarioLogado.getSaldoNaConta() < imovel.getPreco()) {
-			throw new Exception("Você não tem saldo suficiente para comprar este imóvel"
-					+ "\n" + "Seu saldo é: " + usuarioLogado.getSaldoNaConta());
-		}
+		
+		ValidationModule.analizeCash(usuarioLogado.getSaldoNaConta(), imovel.getPreco());
 		
 		usuarioLogado.efetuaPagamento(imovel.getPreco());
 		usuarioLogado.adicionaImovelParaVenda(imovel); //GUARDA O IMOVEL COMPRADO NO MAP bancoDeImoveisParaVenda DO NOV USUARIO QUE ESTÁ COMPRANDO
@@ -232,6 +200,42 @@ public class Sistema {
 		return true;
 	}
 	
+	
+	/**
+	 * Aluga imóvel de terceiros, armazena o imovel no bancoDeImoveisParaAlugar do usuario logado e
+	 * 		cadastra o imovel.
+	 * 
+	 * @param codigoDoImovel
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean alugaImovelParaTerceiros(String codigoDoImovel) throws Exception {
+		
+		ValidationModule.analyzeString(codigoDoImovel, "Código do imóvel inválido");
+		ValidationModule.analizeImmobileAlugar(bancoDeImoveisParaAlugar, codigoDoImovel);
+		
+		Imovel imovel = bancoDeImoveisParaAlugar.get(codigoDoImovel);
+		
+		ValidationModule.analizeCash(usuarioLogado.getSaldoNaConta(), imovel.getPreco());
+		ValidationModule.analizeBoolean(imovel.isAlugado(), "Imovel já alugado");
+		ValidationModule.analizeNomeProprietario(imovel.getNomeDoProprietario(), usuarioLogado.getNome());
+		
+		usuarioLogado.efetuaPagamento(imovel.getPreco());
+		usuarioLogado.alugaImovel(imovel);
+		usuarioLogado.incrementaimoveisAlugadosInquilino();
+		imovel.setAlugado(true);    
+		
+		for (Usuario usuario : bancoDeUsuarios.values()) {
+			if (usuario.getNome().equals(imovel.getNomeDoProprietario())) {
+				adicionaDinheiroAoUsuario(SENHA_DO_ADM, usuario.getLogin(), imovel.getPreco());
+			}
+		}
+		
+		removeImovelParaAlugar(codigoDoImovel);
+		return true;
+	}
+	
+	
 	/**
 	 * Remove um imovel por código do imóvel.
 	 * @param codigoDoImovel
@@ -249,25 +253,15 @@ public class Sistema {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean vendeApartamento(String proprietario, String coordenadaDeEndereco, int andar, double area, double preco,
+	public boolean vendeApartamento(String coordenadaDeEndereco, int andar, double area, double preco,
 			int numeroDeQuartos, int vagasNaGaragem) throws Exception {
-		if (proprietario == null || proprietario.trim().isEmpty()) {
-			throw new Exception("Nome do proprietario do apartamento não pode ser vazio ou nulo.");
-		}
-		if (area <= 0) {
-			throw new Exception("Area do apartamento não pode ser menor ou igual a zero.");
-		}
-		if (preco <= 0) {
-			throw new Exception("Preço do apartamento não pode ser menor ou igual a zero.");
-		}
-		if (numeroDeQuartos <= 0) {
-			throw new Exception("Numero de quartos do apartamento não pode ser menor ou igual a zero.");
-		}
-		if (andar <= 0) {
-			throw new Exception("O andar do apartamento não pode ser menor ou igual a zero.");
-		}
 		
-		Imovel apartamento = fabricaDeImoveis.fabricaApartamento(proprietario, coordenadaDeEndereco, andar, area, preco, numeroDeQuartos, vagasNaGaragem);
+		ValidationModule.analizeValue(area, "Área do apartamento não pode ser menor ou igual a zero");
+		ValidationModule.analizeValue(preco, "Preço do apartamento não pode ser menor ou igual a zero.");
+		ValidationModule.analizeValue(numeroDeQuartos, "Numero de quartos do apartamento não pode ser menor ou igual a zero.");
+		ValidationModule.analizeValue(andar, "O andar do apartamento não pode ser menor ou igual a zero.");
+		ValidationModule.analyzeString(coordenadaDeEndereco, "Endereço não pode ser vazio ou nulo");
+		Imovel apartamento = fabricaDeImoveis.fabricaApartamento(usuarioLogado.getNome(), coordenadaDeEndereco, andar, area, preco, numeroDeQuartos, vagasNaGaragem);
 		cadastraImovelParaVenda(apartamento);
 		
 		usuarioLogado.adicionaImovelParaVenda(apartamento);
@@ -284,13 +278,8 @@ public class Sistema {
 	 * @throws Exception
 	 */
 	private void cadastraImovelParaVenda(Imovel imovel) throws Exception {
-		if (imovel == null) {
-			throw new Exception("Imovel nao pode ser null");
-		}
-
-		if (bancoDeImoveisParaVenda.containsKey(imovel.getCodigoUnico())) {
-			throw new Exception("Imovel ja cadastrado");
-		}
+		ValidationModule.analizeObject(imovel, "Imovel nao pode ser null");
+		ValidationModule.analizeBoolean(bancoDeImoveisParaVenda.containsKey(imovel.getCodigoUnico()), "Imóvel já cadastrado");
 		
 		bancoDeImoveisParaVenda.put(imovel.getCodigoUnico(), imovel);
 	}
@@ -304,25 +293,16 @@ public class Sistema {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean vendeCasa(String proprietario, String coordenadaDeEndereco, double area, double preco,
+	public boolean vendeCasa(String coordenadaDeEndereco, double area, double preco,
 							int numeroDeQuartos, int vagasNaGaragem) throws Exception {
-		if (proprietario == null || proprietario.trim().isEmpty()) {
-			throw new Exception("Nome do proprietario da casa não pode ser vazio ou nulo.");
-		}
-		if (area <= 0) {
-			throw new Exception("Area da casa não pode ser menor ou igual a zero.");
-		}
-		if (preco <= 0) {
-			throw new Exception("Preço da casa não pode ser menor ou igual a zero.");
-		}
-		if (numeroDeQuartos <= 0) {
-			throw new Exception("Numero de quartos da casa não pode ser menor ou igual a zero.");
-		}
-		if (coordenadaDeEndereco == null || coordenadaDeEndereco.trim().isEmpty()) {
-			throw new Exception ("Endereço não pode ser vazio ou nulo.");
-		}
 		
-		Imovel casa = fabricaDeImoveis.fabricaCasa(proprietario, coordenadaDeEndereco, area, preco, numeroDeQuartos, vagasNaGaragem);
+
+		ValidationModule.analizeValue(area, "Área da casa não pode ser menor ou igual a zero");
+		ValidationModule.analizeValue(preco, "Preço da casa não pode ser menor ou igual a zero.");
+		ValidationModule.analizeValue(numeroDeQuartos, "Numero de quartos da casa não pode ser menor ou igual a zero.");
+		ValidationModule.analyzeString(coordenadaDeEndereco, "Endereço não pode ser vazio ou nulo.");
+		
+		Imovel casa = fabricaDeImoveis.fabricaCasa(usuarioLogado.getNome(), coordenadaDeEndereco, area, preco, numeroDeQuartos, vagasNaGaragem);
 		cadastraImovelParaVenda(casa);
 		
 		usuarioLogado.adicionaImovelParaVenda(casa);
@@ -340,8 +320,11 @@ public class Sistema {
 	 * @param precoMinimo
 	 * @param precoMaximo
 	 * @return
+	 * @throws ValueInvalidException 
 	 */
-	public String getImovelParaVendaPorFaixaDePreco(double precoMinimo, double precoMaximo) {
+	public String getImovelParaVendaPorFaixaDePreco(double precoMinimo, double precoMaximo) throws ValueInvalidException {
+		ValidationModule.analizeValue(precoMaximo, "Preço máximo não pode ser zero ou negativo!");
+		ValidationModule.analizeValue(precoMinimo, "Preço mínimo não pode ser zero ou negativo!");
 		
 		String imoveisEmString = "";
 		for (Imovel imovel : bancoDeImoveisParaVenda.values()){
@@ -360,8 +343,11 @@ public class Sistema {
 	 * @param numeroMinimoDeComodos
 	 * @param numeroMaximoDeComodos
 	 * @return
+	 * @throws ValueInvalidException 
 	 */
-	public String getImovelParaVendaPorNumeroDeComodos(int numeroMinimoDeComodos, int numeroMaximoDeComodos) {
+	public String getImovelParaVendaPorNumeroDeComodos(int numeroMinimoDeComodos, int numeroMaximoDeComodos) throws ValueInvalidException {
+		ValidationModule.analizeInteger(numeroMinimoDeComodos, "O número mínimo de cômodos é 1, tente novamente!");
+		ValidationModule.analizeInteger(numeroMaximoDeComodos, "O número máximo de cômodos não pode ser zero ou negativo, tente novamente!");
 		
 		String imoveisEmString = "";
 		for (Imovel imovel : bancoDeImoveisParaVenda.values()) {
@@ -375,43 +361,37 @@ public class Sistema {
 	
 	
 	/**
-	 * FALTA CORRIGIR...
+	 * Cria o objeto apartamento, verifica se já existe este apartamento no banco de imoveis,
+	 * 		adiciona o apartamento ao Map bancoDeImoveisParaAlugar, adiciona dinheiro ao
+	 * 		proprietario, incrementa no histórico e adiciona o imóvel no Map do usuario logado. 
 	 * 		
 	 * @param proprietario, coordenadaDeEndereco, andar, area, preco, numeroDeQuartos, vagasNaGaragem
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean ApParaAlugarDeProprietario(String proprietario, String coordenadaDeEndereco, int andar, double area, double preco,
+	public boolean ApParaAlugarDeProprietario(String coordenadaDeEndereco, int andar, double area, double preco,
 				 int numeroDeQuartos, int vagasNaGaragem) throws Exception {
-		if (proprietario == null || proprietario.trim().isEmpty()) {
-			throw new Exception("Nome do proprietario do apartamento não pode ser vazio ou nulo.");
-		}
-		if (area <= 0) {
-			throw new Exception("Area do apartamento não pode ser menor ou igual a zero.");
-		}
-		if (preco <= 0) {
-			throw new Exception("Preço do apartamento não pode ser menor ou igual a zero.");
-		}
-		if (numeroDeQuartos <= 0) {
-			throw new Exception("Numero de quartos do apartamento não pode ser menor ou igual a zero.");
-		}
-		if (andar <= 0) {
-			throw new Exception("O andar do apartamento não pode ser menor ou igual a zero.");
-		}
 		
-		Imovel apartamento = fabricaDeImoveis.fabricaApartamento(proprietario, coordenadaDeEndereco, andar, area, preco, numeroDeQuartos, vagasNaGaragem);
+		ValidationModule.analizeValue(area, "Área do apartamento não pode ser menor ou igual a zero");
+		ValidationModule.analizeValue(preco, "Preço do apartamento não pode ser menor ou igual a zero.");
+		ValidationModule.analizeValue(numeroDeQuartos, "Numero de quartos do apartamento não pode ser menor ou igual a zero.");
+		ValidationModule.analizeValue(andar, "O andar do apartamento não pode ser menor ou igual a zero.");
+		
+		Imovel apartamento = fabricaDeImoveis.fabricaApartamento(usuarioLogado.getNome(), coordenadaDeEndereco, andar, area, preco, numeroDeQuartos, vagasNaGaragem);
 		
 		if (bancoDeImoveisParaAlugar.containsKey(apartamento.getCodigoUnico())){
 			throw new Exception ("Imovel já cadastrado nos imóveis para alugar");
 		}
-		
-		usuarioLogado.incrementaimoveisAlugadosLocador();
-		usuarioLogado.alugaImovel(apartamento);
-		removeImovelParaAlugar(apartamento.getCodigoUnico());
+		cadastraImovelParaALugar(apartamento);
+		usuarioLogado.adicionaImovelParaAlugar(apartamento);
 		return true;
 	}
 	
+	public String getUsuarioLogado() {
+		return usuarioLogado.getNome();
+	}
 	
+
 	/**
 	 * Remove imovel por codigoDoImovel do Map bancoDeImoveisParaAlugar.
 	 * @param codigoDoImovel
@@ -422,69 +402,29 @@ public class Sistema {
 	
 	
 	/**
-	 * Falta CORRIGIR...
+	 * Cria o objeto casa, verifica se já existe esta casa no banco de imoveis,
+	 * 		adiciona a casa ao Map bancoDeImoveisParaAlugar, adiciona dinheiro ao
+	 * 		proprietario, incrementa no histórico e adiciona o imóvel no Map do usuario logado. 
+	 * 
 	 * @param proprietario, coordenadaDeEndereco, area, preco, numeroDeQuartos, vagasNaGaragem
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean casaParaAlugarDeProprietario(String proprietario, String coordenadaDeEndereco, double area, double preco,
+	public boolean casaParaAlugarDeProprietario(String coordenadaDeEndereco, double area, double preco,
 			int numeroDeQuartos, int vagasNaGaragem) throws Exception {
-		if (proprietario == null || proprietario.trim().isEmpty()) {
-			throw new Exception("Nome do proprietario da casa não pode ser vazio ou nulo.");
-		}
-		if (area <= 0) {
-			throw new Exception("Area da casa não pode ser menor ou igual a zero.");
-		}
-		if (preco <= 0) {
-			throw new Exception("Preço da casa não pode ser menor ou igual a zero.");
-		}
-		if (numeroDeQuartos <= 0) {
-			throw new Exception("Numero de quartos da casa não pode ser menor ou igual a zero.");
-		}
 		
-		Imovel casa = fabricaDeImoveis.fabricaCasa(proprietario, coordenadaDeEndereco, area, preco, numeroDeQuartos, vagasNaGaragem);
+		ValidationModule.analizeValue(area, "Área da casa não pode ser menor ou igual a zero");
+		ValidationModule.analizeValue(preco, "Preço da casa não pode ser menor ou igual a zero.");
+		ValidationModule.analizeValue(numeroDeQuartos, "Numero de quartos da casa não pode ser menor ou igual a zero.");
+		ValidationModule.analyzeString(coordenadaDeEndereco, "Endereço não pode ser vazio ou nulo.");
 		
-		if (bancoDeImoveisParaAlugar.containsKey(casa.getCodigoUnico())) {
-			throw new Exception ("Imovel já cadastrado nos imóveis para alugar");
-		}
+		Imovel casa = fabricaDeImoveis.fabricaCasa(usuarioLogado.getNome(), coordenadaDeEndereco, area, preco, numeroDeQuartos, vagasNaGaragem);
+		
+		ValidationModule.analizeBoolean(bancoDeImoveisParaAlugar.containsKey(casa.getCodigoUnico()), "Imovel já cadastrado nos imóveis para alugar");
 	
-		
-		usuarioLogado.alugaImovel(casa);
-		removeImovelParaAlugar(casa.getCodigoUnico());
-		usuarioLogado.incrementaimoveisAlugadosLocador();
-		
+		cadastraImovelParaALugar(casa);
+		usuarioLogado.adicionaImovelParaAlugar(casa);
 		return true; 
-	}
-	
-	
-	/**
-	 * Aluga imóvel de terceiros, armazena o imovel no bancoDeImoveisParaAlugar do usuario logado e
-	 * 		cadastra o imovel.
-	 * 
-	 * @param codigoDoImovel
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean alugaImovelParaTerceiros(String codigoDoImovel) throws Exception {
-		if (codigoDoImovel == null || codigoDoImovel.trim().isEmpty()) {
-			throw new Exception("Código do imóvel não pode ser vazio ou nulo.");
-		}
-		if (!bancoDeImoveisParaVenda.containsKey(codigoDoImovel)) {
-			throw new Exception("Código inválido");
-		}
-
-		Imovel imovel = bancoDeImoveisParaVenda.get(codigoDoImovel);
-		if (imovel.isAlugado()) {
-			throw new Exception("Imóvel já alugado");
-		}
-		if (imovel.getNomeDoProprietario().equals(usuarioLogado.getNome())) {
-			throw new Exception("Você não pode alugar um imóvel próprio");
-		}
-		
-		usuarioLogado.incrementaimoveisAlugadosInquilino();
-		usuarioLogado.adicionaImovelParaAlugar(imovel);
-		cadastraImovelParaALugar(imovel);
-		return true;
 	}
 	
 	
@@ -494,15 +434,9 @@ public class Sistema {
 	 * @throws Exception
 	 */
 	private void cadastraImovelParaALugar(Imovel imovel) throws Exception{
-		if (imovel == null){
-			throw new Exception("Imovel nao pode ser null");
-		}
-		
-		if (bancoDeImoveisParaAlugar.containsKey(imovel.getCodigoUnico())) {
-			throw new Exception("Imovel ja cadastrado");
-		}
-		
-		imovel.setAlugado(true);    //MUDA O STATUS PARA ALUGADO TRUE
+		ValidationModule.analizeObject(imovel, "Imovel nao pode ser null");
+		ValidationModule.analizeBoolean(bancoDeImoveisParaAlugar.containsKey(imovel.getCodigoUnico()), "Imovel ja cadastrado");
+
 		usuarioLogado.incrementaimoveisAlugadosLocador();
 		bancoDeImoveisParaAlugar.put(imovel.getCodigoUnico(), imovel);
 	}
@@ -513,9 +447,11 @@ public class Sistema {
 	 * @param precoMinimo
 	 * @param precoMaximo
 	 * @return
+	 * @throws ValueInvalidException 
 	 */
-	public String getImovelParaAlugarPorFaixaDePreco(double precoMinimo, double precoMaximo){
-		
+	public String getImovelParaAlugarPorFaixaDePreco(double precoMinimo, double precoMaximo) throws ValueInvalidException{
+		ValidationModule.analizeValue(precoMaximo, "Preço máximo não pode ser zero ou negativo!");
+		ValidationModule.analizeValue(precoMinimo, "Preço mínimo não pode ser zero ou negativo!");
 		String imoveisEmString = "";
 		
 		for (Imovel imovel : bancoDeImoveisParaAlugar.values()) {
@@ -534,8 +470,11 @@ public class Sistema {
 	 * @param numeroMinimoDeComodos
 	 * @param numeroMaximoDeComodos
 	 * @return
+	 * @throws ValueInvalidException 
 	 */
-	public String getImovelParaAlugarPorNumeroDeComodos(int numeroMinimoDeComodos, int numeroMaximoDeComodos ){
+	public String getImovelParaAlugarPorNumeroDeComodos(int numeroMinimoDeComodos, int numeroMaximoDeComodos ) throws ValueInvalidException{
+		ValidationModule.analizeInteger(numeroMinimoDeComodos, "O número mínimo de cômodos é 1, tente novamente!");
+		ValidationModule.analizeInteger(numeroMaximoDeComodos, "O número máximo de cômodos não pode ser zero ou negativo, tente novamente!");
 		String imoveisEmString = "";
 		for (Imovel imovel : bancoDeImoveisParaAlugar.values()) {
 			
@@ -553,8 +492,11 @@ public class Sistema {
 	 * @param areaMinima
 	 * @param areaMaxima
 	 * @return
+	 * @throws ValueInvalidException 
 	 */
-	public String getImovelParaAlugarPorAreaInterna(double areaMinima, double areaMaxima){
+	public String getImovelParaAlugarPorAreaInterna(double areaMinima, double areaMaxima) throws ValueInvalidException{
+		ValidationModule.analizeValue(areaMaxima, "A área máxima tem que ser maior que zero");
+		ValidationModule.analizeValue(areaMinima, "A área mínima tem que ser maior que zero");
 		String imoveisEmString = "";
 		for (Imovel imovel : bancoDeImoveisParaAlugar.values()){
 			

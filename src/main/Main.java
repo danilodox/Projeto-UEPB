@@ -4,10 +4,17 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Scanner;
 
-
+import excecoes.ValueInvalidException;
 import sistema.Sistema;
 
-//...
+/**
+ * Classe com o método main.
+ * 
+ * @author Danilo Medeiros Dantas, danilomedeiros.dox@gmail.com
+ * @version 1.0 <br>
+ *          Copyright (c) 2017 Universidade Estadual de Campina Grande.
+ */
+
 public class Main {
 	static BufferedReader entrada = new BufferedReader(new InputStreamReader(System.in));
 	static Scanner input = new Scanner(System.in);
@@ -17,6 +24,9 @@ public class Main {
     public static String opcaoAlugar;
     public static Sistema sistema = new Sistema();
 	
+    
+    // SENHA DO ADMINSTRADOR:  UEPB
+    
 	public static void main(String[] args) throws Exception {
 	
 	
@@ -113,7 +123,10 @@ public class Main {
 				
 				try {
 					limparTela();
-					vendeApartamento();
+					if(vendeApartamento()) {
+						System.out.println("Apartamento adicionado ao sistema com sucesso!!");
+					}
+					
 				} catch (Exception e) {
 					System.out.println(e.getMessage() + "\n");
 				}
@@ -123,7 +136,9 @@ public class Main {
 				
 				try {
 					limparTela();
-					vendeCasa();
+					if(vendeCasa()) {
+						System.out.println("Casa cadastrado na lista de vendas!");
+					}
 				} catch (Exception e) {
 					System.out.println(e.getMessage() + "\n");
 				}
@@ -142,7 +157,9 @@ public class Main {
 			case("6"):
 				try {
 					limparTela();
-					casaParaAlugarDeProprietario();
+					if(casaParaAlugarDeProprietario()) {
+						System.out.println("Casa para alugar cadastrada no sistema com sucesso!!");
+					}
 				} catch (Exception e) {
 					System.out.println(e.getMessage() + "\n");
 				}
@@ -151,7 +168,9 @@ public class Main {
 			case("7"):
 				try {
 					limparTela();
-					ApParaAlugarDeProprietario();
+					if(ApParaAlugarDeProprietario()) {
+						System.out.println("Apartamento para alugar cadastrado no sistema com sucesso!!");
+					}
 				} catch (Exception e) {
 					System.out.println(e.getMessage() + "\n");
 				}
@@ -159,7 +178,6 @@ public class Main {
 				
 			case("8"):
 				try {
-					
 					ExibirHistorico();
 				} catch (Exception e) {
 					System.out.println(e.getMessage() + "\n");
@@ -246,20 +264,17 @@ public class Main {
 				
 			case("2"):
 				
-				getImovelParaAlugarPorNComodos();
-				loopAlugar = false;
+				System.out.println(getImovelParaAlugarPorNComodos());
 				break;
 				
 			case("3"):
 				
-				getImovelParaAlugarPorAreaInterna();
-				loopAlugar = false;
+				System.out.println(getImovelParaAlugarPorAreaInterna());
 				break;
 				
 			case("4"):
 				
-				getImovelParaAlugarPorFaixaDePreco();
-				loopAlugar = false;
+				System.out.println(getImovelParaAlugarPorFaixaDePreco());
 				break;
 				
 			case("5"):
@@ -354,7 +369,7 @@ public class Main {
 		System.out.println("|_______________________________________|");
 	}
 	
-	public static String getImovelParaAlugarPorAreaInterna() {
+	public static String getImovelParaAlugarPorAreaInterna() throws ValueInvalidException {
 		System.out.println(" __________________________________________________");
 		System.out.print("| 1) Digite o tamanho da área interna mínima: ");
 		double areaMinimo = input.nextDouble();
@@ -366,7 +381,7 @@ public class Main {
 		return sistema.getImovelParaAlugarPorAreaInterna(areaMinimo, areaMaximo);
 	}
 	
-	public static String getImovelParaAlugarPorFaixaDePreco() {
+	public static String getImovelParaAlugarPorFaixaDePreco() throws ValueInvalidException {
 			System.out.println(" __________________________________________________");
 			System.out.print("| 1) Digite o preço mínimo: ");
 			double precoMinimo = input.nextDouble();
@@ -377,7 +392,7 @@ public class Main {
 			return sistema.getImovelParaAlugarPorFaixaDePreco(precoMinimo, precoMaximo);
 	}
 	
-	public static String getImovelParaAlugarPorNComodos() {
+	public static String getImovelParaAlugarPorNComodos() throws ValueInvalidException {
 		System.out.println(" __________________________________________________");
 		System.out.print("| 1) Digite o número mínimo de cômodos: ");
 		int comodoMinimo = input.nextInt();
@@ -389,7 +404,7 @@ public class Main {
 		return sistema.getImovelParaAlugarPorNumeroDeComodos(comodoMinimo, comodoMaximo);
 	}
 	
-	public static String getImovelParaVendaPorNComodos() {
+	public static String getImovelParaVendaPorNComodos() throws ValueInvalidException {
 		System.out.println(" __________________________________________________");
 		System.out.print("| 1) Digite o número mínimo de cômodos: ");
 		int comodoMinimo = input.nextInt();
@@ -400,7 +415,7 @@ public class Main {
 		return sistema.getImovelParaVendaPorNumeroDeComodos(comodoMinimo, comodoMaximo);
 	}
 	
-	public static String getImovelParaVendaPorFaixaDePreco() {
+	public static String getImovelParaVendaPorFaixaDePreco() throws ValueInvalidException {
 		System.out.println(" __________________________________________________");
 		System.out.print("| 1) Digite o preço mínimo: ");
 		double precoMinimo = input.nextDouble();
@@ -414,111 +429,101 @@ public class Main {
 	
 	public static boolean ApParaAlugarDeProprietario () throws Exception {
 		System.out.println(" __________________________________________________");
-		System.out.print("| 1) Digite o nome do proprietario: ");
-		String proprietario = input.next();
+		System.out.print("| 1) Digite um endereço ou uma referência: ");
+		String endereco = entrada.readLine();
 		System.out.println("|");
-		System.out.print("| 2) Digite um endereço ou uma referência: ");
-		String endereco = input.next();
-		System.out.println("|");
-		System.out.print("| 3) Digite quantos andares contém o apartamento: ");
+		System.out.print("| 2) Digite quantos andares contém o apartamento: ");
 		int andar = input.nextInt();
 		System.out.println("|");
-		System.out.print("| 4) Digite o tamanho da área interna do apartamento(m²): ");
+		System.out.print("| 3) Digite o tamanho da área interna do apartamento(m²): ");
 		double area = input.nextDouble();
 		System.out.println("|");
-		System.out.print("| 5) Número de quarto(s) do apartamento: ");
+		System.out.print("| 4) Número de quarto(s) do apartamento: ");
 		int quarto = input.nextInt();
 		System.out.println("|");
-		System.out.print("| 6) Número de vaga(s) na garagem: ");
+		System.out.print("| 5) Número de vaga(s) na garagem: ");
 		int garagem = input.nextInt();
 		System.out.println("|");
-		System.out.print("| 7) Digite o preço do apartamento: ");
+		System.out.print("| 6) Digite o preço do apartamento: ");
 		double preco = input.nextDouble();
 		System.out.println("|__________________________________________________");
 		
-		return sistema.ApParaAlugarDeProprietario(proprietario, endereco, andar, area, preco, quarto, garagem);
+		return sistema.ApParaAlugarDeProprietario(endereco, andar, area, preco, quarto, garagem);
 	}
 	
 	public static boolean casaParaAlugarDeProprietario() throws Exception {
 		System.out.println(" __________________________________________________");
-		System.out.print("| 1) Digite o nome do proprietario: ");
-		String proprietario = entrada.readLine();
-		System.out.println("|");
-		System.out.print("| 2) Digite um endereço ou uma referência: ");
+		System.out.print("| 1) Digite um endereço ou uma referência: ");
 		String endereco = entrada.readLine();
 		System.out.println("|");
-		System.out.print("| 3) Digite o tamanho da área interna da casa(m²): ");
+		System.out.print("| 2) Digite o tamanho da área interna da casa(m²): ");
 		double area = input.nextDouble();
 		System.out.println("|");
-		System.out.print("| 4) Número de quarto(s) da casa: ");
+		System.out.print("| 3) Número de quarto(s) da casa: ");
 		int quarto = input.nextInt();
 		System.out.println("|");
-		System.out.print("| 5) Número de vaga(s) na garagem: ");
+		System.out.print("| 4) Número de vaga(s) na garagem: ");
 		int garagem = input.nextInt();
 		System.out.println("|");
-		System.out.print("| 6) Digite o preço da casa: ");
+		System.out.print("| 5) Digite o preço da casa: ");
 		double preco = input.nextDouble();
 		System.out.println("|__________________________________________________");
 		
-		return sistema.casaParaAlugarDeProprietario(proprietario, endereco, area, preco, quarto, garagem);
+		return sistema.casaParaAlugarDeProprietario(endereco, area, preco, quarto, garagem);
 	}
 	
 	public static boolean vendeCasa() throws Exception {
 		System.out.println(" __________________________________________________");
-		System.out.print("| 1) Digite o nome do proprietario: ");
-		String proprietario = entrada.readLine();
-		System.out.println("|");
-		System.out.print("| 2) Digite um endereço ou uma referência: ");
+		System.out.print("| 1) Digite um endereço ou uma referência: ");
 		String endereco = entrada.readLine();
 		System.out.println("|");
-		System.out.print("| 3) Digite o tamanho da área interna da casa(m²): ");
+		System.out.print("| 2) Digite o tamanho da área interna da casa(m²): ");
 		double area = input.nextDouble();
 		System.out.println("|");
-		System.out.print("| 4) Número de quarto(s) da casa: ");
+		System.out.print("| 3) Número de quarto(s) da casa: ");
+		int quarto = input.nextInt();
+		System.out.println("|");
+		System.out.print("| 4) Número de vaga(s) na garagem: ");
+		int garagem = input.nextInt();
+		System.out.println("|");
+		System.out.print("| 5) Digite o preço da casa: ");
+		double preco = input.nextDouble();
+		System.out.println("|__________________________________________________");
+		
+		
+		return sistema.vendeCasa(endereco, area, preco, quarto, garagem);
+	}
+	
+	public static boolean vendeApartamento() throws Exception {
+		System.out.println(" __________________________________________________");
+		System.out.print("| 1) Digite um endereço ou uma referência: ");
+		String endereco = entrada.readLine();
+		System.out.println("|");
+		System.out.print("| 2) Digite quantos andares contém o apartamento: ");
+		int andar = input.nextInt();
+		System.out.println("|");
+		System.out.print("| 3) Digite o tamanho da área interna do apartamento(m²): ");
+		double area = input.nextDouble();
+		System.out.println("|");
+		System.out.print("| 4) Número de quarto(s) do apartamento: ");
 		int quarto = input.nextInt();
 		System.out.println("|");
 		System.out.print("| 5) Número de vaga(s) na garagem: ");
 		int garagem = input.nextInt();
 		System.out.println("|");
-		System.out.print("| 6) Digite o preço da casa: ");
+		System.out.print("| 6) Digite o preço do apartamento: ");
 		double preco = input.nextDouble();
 		System.out.println("|__________________________________________________");
 		
-		return sistema.vendeCasa(proprietario, endereco, area, preco, quarto, garagem);
-	}
-	
-	public static boolean vendeApartamento() throws Exception {
-		System.out.println(" __________________________________________________");
-		System.out.print("| 1) Digite o nome do proprietario: ");
-		String proprietario = entrada.readLine();
-		System.out.println("|");
-		System.out.print("| 2) Digite um endereço ou uma referência: ");
-		String endereco = entrada.readLine();
-		System.out.println("|");
-		System.out.print("| 3) Digite quantos andares contém o apartamento: ");
-		int andar = input.nextInt();
-		System.out.println("|");
-		System.out.print("| 4) Digite o tamanho da área interna do apartamento(m²): ");
-		double area = input.nextDouble();
-		System.out.println("|");
-		System.out.print("| 5) Número de quarto(s) do apartamento: ");
-		int quarto = input.nextInt();
-		System.out.println("|");
-		System.out.print("| 6) Número de vaga(s) na garagem: ");
-		int garagem = input.nextInt();
-		System.out.println("|");
-		System.out.print("| 7) Digite o preço do apartamento: ");
-		double preco = input.nextDouble();
-		System.out.println("|__________________________________________________");
 		
-		return sistema.vendeApartamento(proprietario, endereco, andar, area, preco, quarto, garagem);
+		return sistema.vendeApartamento(endereco, andar, area, preco, quarto, garagem);
 	}
 	
 	public static void adicionaDinheiro() throws Exception {
 		System.out.print("|  Senha do administrador: ");
 		String adm = input.next();
 		System.out.print("\n| Login: ");
-		String login = input.next();
+		String login = entrada.readLine();
 		System.out.println("Valor a ser adicionado: ");
 		double valor = input.nextDouble();
 		
@@ -555,7 +560,7 @@ public class Main {
 		int idade = input.nextInt();
 		System.out.println("|");
 		System.out.print("| 2) Digite seu login: ");
-		String login = input.next();
+		String login = entrada.readLine();
 		System.out.println("|");
 		System.out.print("| 3) Digite seu cpf: ");
 		String cpf = input.next();
@@ -570,7 +575,7 @@ public class Main {
 	public static boolean efetuarLogin() throws Exception {
 		System.out.println(" __________________________________________________");
 		System.out.print("| 1) LOGIN: ");
-		String login = input.next();
+		String login = entrada.readLine();
 		System.out.println("|");
 		System.out.print("| 2) SENHA: ");
 		String senha = input.next();
