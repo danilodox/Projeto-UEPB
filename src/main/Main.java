@@ -11,6 +11,7 @@ import sistema.Sistema;
  * Classe com o método main.
  * 
  * @author Danilo Medeiros Dantas, danilomedeiros.dox@gmail.com
+ * @Git https://github.com/danilodox
  * @version 1.0 <br>
  *          Copyright (c) 2017 Universidade Estadual de Campina Grande.
  */
